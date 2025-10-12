@@ -10,11 +10,17 @@ export const PRICE_LEVELS = ["$", "$$", "$$$", "$$$$"];
 // Google Places API endpoint
 export const PLACES_API_BASE_URL = "https://places.googleapis.com/v1";
 
+// Google Geocoding API endpoint
+export const GEOCODING_API_BASE_URL = "https://maps.googleapis.com/maps/api";
+
 // API endpoints
 export const API_ENDPOINTS = {
+  // Places API Endpoints
   NEARBY_SEARCH: "/places:searchNearby",
   PLACE_DETAILS: "/places",
   AUTOCOMPLETE: "/places:autocomplete",
+
+  // Geocode API Endpoints
   GEOCODE: "/geocode/json",
 } as const;
 
