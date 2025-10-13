@@ -50,3 +50,27 @@ export interface SearchResult {
   searchLocation: Address;
   totalResults: number;
 }
+
+export interface GooglePlace {
+  id: string;
+  displayName?: {
+    text: string;
+  };
+  formattedAddress?: string;
+  location?: {
+    latitude: number;
+    longitude: number;
+  };
+  rating?: number;
+  userRatingCount?: number;
+  priceLevel?: string;
+  types?: string[];
+  nationalPhoneNumber?: string;
+  websiteUri?: string;
+  currentOpeningHours?: {
+    openNow?: boolean;
+  };
+  photos?: Array<{
+    name: string;
+  }>;
+}

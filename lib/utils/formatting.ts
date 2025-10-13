@@ -47,3 +47,20 @@ export function formatPhoneNumber(phone: string): string {
   // If not standard format, return original
   return phone;
 }
+
+/**
+ * Helper function to convert Google's price level to our format
+ */
+export function convertPriceLevel(priceLevel?: string): string | undefined {
+  if (!priceLevel) return undefined;
+
+  const priceLevelMap: { [key: string]: string } = {
+    PRICE_LEVEL_FREE: "$",
+    PRICE_LEVEL_INEXPENSIVE: "$",
+    PRICE_LEVEL_MODERATE: "$$",
+    PRICE_LEVEL_EXPENSIVE: "$$$",
+    PRICE_LEVEL_VERY_EXPENSIVE: "$$$$",
+  };
+
+  return priceLevelMap[priceLevel];
+}

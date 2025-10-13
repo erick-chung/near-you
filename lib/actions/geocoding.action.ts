@@ -56,3 +56,15 @@ export async function geocodeAddress(address: string): Promise<Address> {
     },
   };
 }
+
+export async function fetchFromExternalAPI(params) {
+  // 1. Validate inputs & credentials
+  // 2. Build request (URL, headers, body)
+  // 3. Make HTTP request
+  // 4. Check HTTP response
+  // 5. Parse response
+  // 6. Validate API response
+  // 7. Extract needed data
+  // 8. Transform to your types
+  // 9. Return
+}
