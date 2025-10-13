@@ -1,27 +1,17 @@
+import type React from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { Analytics } from "@vercel/analytics/next";
+import { Suspense } from "react";
+import { Header } from "@/components/layout/Header";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "NearYou",
+  title: "NearYou - Find Restaurants Near Any Location",
   description:
-    "Find the best restaurants and cafes near you. Explore local dining options with reviews, photos, hours, and directions.",
-};
-
-// Tells browser to set page width to match the device's screen width and sets initial zoom level to 100% (1:1 ratio)
-export const viewport = {
-  width: "device-width",
-  initialScale: 1,
+    "Discover great places to eat and drink near any address, even before you get there.",
+  generator: "v0.app",
 };
 
 export default function RootLayout({
@@ -31,10 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
+        <Header />
+        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+        <Analytics />
       </body>
     </html>
   );

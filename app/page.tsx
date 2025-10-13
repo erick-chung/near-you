@@ -1,5 +1,6 @@
 import { RestaurantList } from "@/components/RestaurantList";
-import { Restaurant } from "@/lib/types";
+import { SearchForm } from "@/components/SearchForm";
+import type { Restaurant } from "@/lib/types";
 
 export default function Home() {
   const sampleRestaurants: Restaurant[] = [
@@ -56,29 +57,37 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 py-8">
-        {/* Header */}
-        {sampleRestaurants.length !== 0 && (
-          <header className="mb-8">
-            <h1 className="font-sans font-bold text-3xl text-foreground mb-2 text-balance">
-              Restaurants Near You
-            </h1>
-            <p className="text-muted-foreground leading-relaxed">
-              Discover delicious dining options in your area
-            </p>
-            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 ring-1 ring-primary/20">
-              <span className="text-sm font-medium text-primary">
-                {`${sampleRestaurants.length} ${
-                  sampleRestaurants.length === 1 ? "restaurant" : "restaurants"
-                } found `}
-              </span>
-            </div>
-          </header>
-        )}
-
-        {/* Restaurant cards */}
-        <div className="flex flex-col gap-4">
-          <RestaurantList restaurants={sampleRestaurants} />
+        <div className="mb-8">
+          <SearchForm />
         </div>
+
+        {/* Restaurant results section */}
+        {sampleRestaurants.length !== 0 && (
+          <>
+            <header className="mb-8">
+              <h1 className="font-sans font-bold text-3xl text-foreground mb-2 text-balance">
+                Restaurants Near You
+              </h1>
+              <p className="text-muted-foreground leading-relaxed">
+                Discover delicious dining options in your area
+              </p>
+              <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 ring-1 ring-primary/20">
+                <span className="text-sm font-medium text-primary">
+                  {`${sampleRestaurants.length} ${
+                    sampleRestaurants.length === 1
+                      ? "restaurant"
+                      : "restaurants"
+                  } found `}
+                </span>
+              </div>
+            </header>
+
+            {/* Restaurant cards */}
+            <div className="flex flex-col gap-4">
+              <RestaurantList restaurants={sampleRestaurants} />
+            </div>
+          </>
+        )}
       </div>
     </main>
   );
