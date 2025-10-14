@@ -1,8 +1,12 @@
 import { Restaurant } from "@/lib/types";
-import { RestaurantCard } from "./RestaurantCard";
 import { UtensilsCrossed } from "lucide-react";
+import RestaurantCard from "./RestaurantCard";
 
-export function RestaurantList({ restaurants }: { restaurants: Restaurant[] }) {
+export default function RestaurantList({
+  restaurants,
+}: {
+  restaurants: Restaurant[];
+}) {
   return (
     <>
       {restaurants.length === 0 ? (

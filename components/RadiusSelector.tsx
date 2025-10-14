@@ -12,7 +12,10 @@ const RADIUS_OPTIONS = [
   { label: "5 mi", value: 8047 },
 ];
 
-export function RadiusSelector({ value, onChange }: RadiusSelectorProps) {
+export default function RadiusSelector({
+  value,
+  onChange,
+}: RadiusSelectorProps) {
   return (
     <div className="w-full">
       <label className="block text-sm font-medium text-foreground mb-2">

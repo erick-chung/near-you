@@ -1,28 +1,33 @@
 "use client";
 
 import { useState } from "react";
-
 import { UtensilsCrossed } from "lucide-react";
-import type { SearchParams } from "@/lib/types";
-import { AddressSearch } from "./AddressSearch";
-import { RadiusSelector } from "./RadiusSelector";
+import AddressSearch from "./AddressSearch";
+import RadiusSelector from "./RadiusSelector";
+import { useRouter } from "next/navigation";
 
 interface SearchFormProps {
-  onSearch?: (params: Omit<SearchParams, "coordinates">) => void;
+  compact?: boolean;
+  address?: string | null;
+  radius?: string | null;
 }
 
-export function SearchForm({ onSearch }: SearchFormProps) {
-  const [address, setAddress] = useState("");
-  const [radius, setRadius] = useState(1609); // Default 1 mile
+// The url to navigate to results with specific params for address and radius: /results?address=${address}&radius=${radius}
+export default function SearchForm({
+  compact,
+  address: initialAddress,
+  radius: initialRadius,
+}: SearchFormProps) {
+  const [address, setAddress] = useState(initialAddress || "");
+  const [radius, setRadius] = useState(
+    initialRadius ? Number(initialRadius) : 1609
+  ); // Default 1 mile
+  const router = useRouter();
 
   const handleSearch = () => {
-    console.log(address, radius);
-    if (address.trim() && onSearch) {
-      onSearch({
-        address,
-        radius,
-      });
-    }
+    if (!address.trim()) return; // Early return if address is empty
+
+    router.push(`/results?address=${address}&radius=${radius}`);
   };
 
   return (

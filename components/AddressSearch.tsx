@@ -9,7 +9,7 @@ interface AddressSearchProps {
   onSearch: () => void;
 }
 
-export function AddressSearch({
+export default function AddressSearch({
   value,
   onChange,
   onSearch,

@@ -1,7 +1,11 @@
 import { Restaurant } from "@/lib/types";
 import { Star, MapPin } from "lucide-react";
 
-export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
+export default function RestaurantCard({
+  restaurant,
+}: {
+  restaurant: Restaurant;
+}) {
   const {
     name,
     address,
