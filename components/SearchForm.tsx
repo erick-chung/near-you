@@ -5,6 +5,7 @@ import { UtensilsCrossed } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AddressSearch } from "./AddressSearch";
 import { RadiusSelector } from "./RadiusSelector";
+import { geocodeAddress } from "@/lib/actions/geocoding.action";
 
 interface SearchFormProps {
   compact?: boolean;
@@ -17,6 +18,8 @@ export default function SearchForm({
   address: initialAddress,
   radius: initialRadius,
 }: SearchFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [address, setAddress] = useState(initialAddress || "");
   const [radius, setRadius] = useState(
     initialRadius ? Number(initialRadius) : 1609
@@ -24,21 +27,47 @@ export default function SearchForm({
   const router = useRouter();
 
   const handleSearch = async () => {
-    if (!address.trim()) return; // Early return if address is empty
+    try {
+      setIsLoading(true);
+      if (!address.trim()) throw new Error("Please enter an address!");
 
-    router.push(`/results?address=${address}&radius=${radius}`);
+      const result = await geocodeAddress(address);
+
+      if (!result) throw new Error("Could not fetch coordinates");
+
+      console.log(result);
+
+      router.push(
+        `/results?address=${result.formatted}&lat=${result.coordinates.lat}&lng=${result.coordinates.lng}&radius=${radius}`
+      );
+    } catch (err) {
+      // By default, err is type unknown. So, you have to set Error to something that's definitely a string such as a custom message or the message from the Error object
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddressChange = (newAddress: string) => {
+    setAddress(newAddress);
+    if (error) setError(null);
   };
 
   return (
     <div className={compact ? "space-y-2" : "space-y-4"}>
       <AddressSearch
         value={address}
-        onChange={setAddress}
+        onChange={handleAddressChange}
         onSearch={handleSearch}
         compact={compact}
+        isLoading={isLoading}
+        error={error}
       />
       <RadiusSelector value={radius} onChange={setRadius} compact={compact} />
-
       {!compact && (
         <div className="flex flex-col items-center justify-center py-12 px-4">
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">

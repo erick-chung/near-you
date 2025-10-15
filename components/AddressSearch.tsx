@@ -1,8 +1,7 @@
 "use client";
 
 import type React from "react";
-
-import { Search } from "lucide-react";
+import { Search, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface AddressSearchProps {
@@ -10,6 +9,8 @@ interface AddressSearchProps {
   onChange: (value: string) => void;
   onSearch: () => void;
   compact?: boolean;
+  isLoading?: boolean;
+  error: string | null;
 }
 
 export function AddressSearch({
@@ -17,6 +18,8 @@ export function AddressSearch({
   onChange,
   onSearch,
   compact,
+  isLoading,
+  error,
 }: AddressSearchProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -48,15 +51,34 @@ export function AddressSearch({
         />
         <Button
           onClick={onSearch}
+          disabled={isLoading}
           size="icon"
           className={`shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground ${
             compact ? "h-9 w-9" : "h-11 w-11"
           }`}
         >
-          <Search className={compact ? "h-4 w-4" : "h-5 w-5"} />
-          <span className="sr-only">Search</span>
+          {isLoading ? (
+            <Loader2
+              className={`${compact ? "h-4 w-4" : "h-5 w-5"} animate-spin`}
+            />
+          ) : (
+            <Search className={compact ? "h-4 w-4" : "h-5 w-5"} />
+          )}
+          <span className="sr-only">
+            {isLoading ? "Searching..." : "Search"}
+          </span>
         </Button>
       </div>
+      {error && (
+        <div
+          className={`flex items-center gap-1.5 text-destructive ${
+            compact ? "mt-1 text-xs" : "mt-1.5 text-sm"
+          }`}
+        >
+          <AlertCircle className={compact ? "h-3 w-3" : "h-4 w-4"} />
+          <span>{error}</span>
+        </div>
+      )}
     </div>
   );
 }
