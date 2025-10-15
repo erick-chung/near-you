@@ -1,11 +1,17 @@
 "use client";
 
+import { ErrorMessage } from "@/components/ErrorMessage";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 import RestaurantList from "@/components/RestaurantList";
 import SearchForm from "@/components/SearchForm";
 import type { Restaurant } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
-function ResultsPage() {
+export default function ResultsPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   // Setup useSearchParams from Next.js
   const searchParams = useSearchParams();
 
@@ -65,14 +71,21 @@ function ResultsPage() {
     },
   ];
 
+  const showResults =
+    !isLoading && error === null && sampleRestaurants.length > 0;
+
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-        <div className="mb-8 sm:mb-10">
+        <div className="mb-6 max-w-2xl">
           <SearchForm compact={true} address={address} radius={radius} />
         </div>
 
-        {sampleRestaurants.length !== 0 && (
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : error ? (
+          <ErrorMessage message={error} />
+        ) : sampleRestaurants.length > 0 ? (
           <>
             <header className="mb-8 sm:mb-10 space-y-4">
               <div className="space-y-2">
@@ -95,15 +108,14 @@ function ResultsPage() {
                 </span>
               </div>
             </header>
-
             <div className="flex flex-col gap-4 sm:gap-6">
               <RestaurantList restaurants={sampleRestaurants} />
             </div>
           </>
+        ) : (
+          <div>No restaurants found</div>
         )}
       </div>
     </main>
   );
 }
-
-export default ResultsPage;

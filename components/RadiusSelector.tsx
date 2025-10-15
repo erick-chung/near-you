@@ -3,6 +3,7 @@
 interface RadiusSelectorProps {
   value: number;
   onChange: (value: number) => void;
+  compact?: boolean;
 }
 
 const RADIUS_OPTIONS = [
@@ -12,13 +13,18 @@ const RADIUS_OPTIONS = [
   { label: "5 mi", value: 8047 },
 ];
 
-export default function RadiusSelector({
+export function RadiusSelector({
   value,
   onChange,
+  compact,
 }: RadiusSelectorProps) {
   return (
     <div className="w-full">
-      <label className="block text-sm font-medium text-foreground mb-2">
+      <label
+        className={`block font-medium text-foreground ${
+          compact ? "text-xs mb-1.5" : "text-sm mb-2"
+        }`}
+      >
         Search Radius
       </label>
       <div className="grid grid-cols-4 gap-2">
@@ -26,7 +32,9 @@ export default function RadiusSelector({
           <button
             key={option.value}
             onClick={() => onChange(option.value)}
-            className={`h-11 rounded-lg text-sm font-semibold transition-all ${
+            className={`rounded-lg font-semibold transition-all ${
+              compact ? "h-9 text-xs" : "h-11 text-sm"
+            } ${
               value === option.value
                 ? "bg-primary text-primary-foreground ring-2 ring-primary/20 shadow-sm"
                 : "bg-card text-muted-foreground border border-border hover:border-primary/50 hover:text-foreground"
