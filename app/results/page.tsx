@@ -71,9 +71,6 @@ export default function ResultsPage() {
     },
   ];
 
-  const showResults =
-    !isLoading && error === null && sampleRestaurants.length > 0;
-
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">

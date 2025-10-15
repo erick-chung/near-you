@@ -23,7 +23,7 @@ export default function SearchForm({
   ); // Default 1 mile
   const router = useRouter();
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!address.trim()) return; // Early return if address is empty
 
     router.push(`/results?address=${address}&radius=${radius}`);
