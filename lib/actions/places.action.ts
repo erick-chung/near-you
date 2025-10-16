@@ -3,6 +3,7 @@
 import { API_ENDPOINTS, PLACES_API_BASE_URL } from "@/config/constants";
 import { GooglePlace, Restaurant, SearchParams } from "../types";
 import { convertPriceLevel } from "../utils/formatting";
+import { calculateDistance } from "../utils/distance";
 
 /**
  * Searches for nearby restaurants using Google Places API
@@ -91,10 +92,16 @@ export async function searchRestaurants(
       photoUrl: place.photos?.[0]?.name
         ? `https://places.googleapis.com/v1/${place.photos[0].name}/media?maxHeightPx=400&maxWidthPx=400&key=${apiKey}`
         : undefined,
-      distance: 0, // Will be calculated later when we know user's exact location
+      distance: calculateDistance(
+        params.coordinates.lat,
+        params.coordinates.lng,
+        place.location?.latitude || 0,
+        place.location?.longitude || 0
+      ),
     }));
 
-    // Step 8: Return the array of restaurants
+    // Step 8: Sort restaurants by distance (closest first) and then return
+    restaurants.sort((a, b) => a.distance - b.distance);
     return restaurants;
   } catch (err) {
     console.error(err);
