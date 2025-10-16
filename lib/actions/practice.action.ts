@@ -12,8 +12,14 @@
  }
 */
 
-import { API_ENDPOINTS, GEOCODING_API_BASE_URL } from "@/config/constants";
-import { Address } from "../types";
+import {
+  API_ENDPOINTS,
+  GEOCODING_API_BASE_URL,
+  PLACES_API_BASE_URL,
+} from "@/config/constants";
+import { Address, GooglePlace, Restaurant } from "../types";
+import { SearchParams } from "next/dist/server/request/search-params";
+import { convertPriceLevel } from "../utils/formatting";
 
 // 1. Create a server action that takes in an address as a string and returns an Address as a promise
 export async function practiceGeocodeAddress(
@@ -65,4 +71,112 @@ export async function practiceGeocodeAddress(
       lng: geoCode.geometry.location.lng,
     },
   };
+}
+
+/*
+Steps for creating a server action for Google Places API:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+// 1. Create a server action called searchRestaurants that takes params as a parameter (type SearchParams) and returns an array of the type restaurant wrapped in a promise
+export async function practiceSearchRestaurants(
+  params: SearchParams
+): Promise<Restaurant[]> {
+  // 2. Get api key and validate it exists
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  if (!apiKey) throw new Error("API key not configured");
+
+  // 3. Build the API URL
+  const url = `${PLACES_API_BASE_URL}${API_ENDPOINTS.NEARBY_SEARCH}`;
+
+  // 4. Make fetch request (Look up what kind of fetch request it is, and depending on that, what you add to your fetch request is different)
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", // Describes type of data we're sending
+      "X-Goog-Api-Key": apiKey, // Here is my apiKey (verifies we can use this service)
+      // Only send me these specific pieces of info
+      "X-Goog-FieldMask":
+        "places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.priceLevel,places.types,places.nationalPhoneNumber,places.websiteUri,places.currentOpeningHours,places.photos",
+    },
+    body: JSON.stringify({
+      // Send search data (must stringify before sending cuz Google expects this format)
+      includedTypes: ["restaurant"], // Only show me restaurants
+      maxResultCount: 20, // Show up to 20 results
+      locationRestriction: {
+        // Search in a circular area
+        circle: {
+          center: {
+            // Specifies center of circle using the coordinates we gave
+            latitude: params.coordinates.lat,
+            longitude: params.coordinates.lng,
+          },
+          radius: params.radius, // Radius of search circle
+        },
+      },
+    }),
+  });
+
+  // 5. Check if HTTP request was successful
+  if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
+
+  // 6. Parse the JSON response
+  const data = await response.json();
+
+  // 7. Validate the API response (always use || for or)
+  if (!data.places || data.places.length === 0)
+    throw new Error("No restaurants found in this area");
+
+  // 8. Transform Google Places data to Restaurant type
+  const restaurants: Restaurant[] = data.places.map((place: GooglePlace) => ({
+    id: place.id || "",
+    name: place.displayName?.text || "Unknown Restaurant",
+    address: place.formattedAddress || "",
+    coordinates: {
+      lat: place.location?.latitude || 0,
+      lng: place.location?.longitude || 0,
+    },
+    rating: place.rating || 0,
+    reviewCount: place.userRatingCount || 0,
+    priceLevel: convertPriceLevel(place.priceLevel), // Google gives "PRICE_LEVEL_MODERATE", which is why we created a utility function to convert it into $
+    cuisineType:
+      place.types?.filter(
+        // Remove all the generic types that google gives you and only keep the specific ones
+        (type: string) =>
+          ![
+            "restaurant",
+            "food",
+            "point_of_interest",
+            "establishment",
+          ].includes(type)
+      ) || [],
+    isOpen: place.currentOpeningHours?.openNow,
+    phoneNumber: place.nationalPhoneNumber,
+    website: place.websiteUri,
+    photoUrl: place.photos?.[0]?.name
+      ? `https://places.googleapis.com/v1/${place.photos[0].name}/media?maxHeightPx=400&maxWidthPx=400&key=${apiKey}`
+      : undefined,
+    distance: 0, // Will be calculated later when we know user's exact location
+  }));
+
+  // 9. Return the array of restaurants
+  return restaurants;
 }

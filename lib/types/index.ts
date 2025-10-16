@@ -32,7 +32,7 @@ export interface Restaurant {
 }
 
 export interface SearchParams {
-  address: string;
+  address?: string;
   coordinates: {
     lat: number;
     lng: number;
