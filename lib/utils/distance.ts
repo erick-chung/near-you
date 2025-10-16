@@ -28,21 +28,25 @@ export function calculateDistance(
   return R * c; // Distance in meters
 }
 
-// 2. Create function: formatDistance(meters) → "0.5 mi" or "500 m"
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 2. Create function: formatDistance(meters)
 /**
  * Format distance in meters to human-readable string
  * @param meters - Distance in meters
- * @returns Formatted string like "0.5 mi" or "500 m"
+ * @returns Formatted string in feet or miles (e.g., "250 ft" or "0.5 mi")
  */
 export function formatDistance(meters: number): string {
   const METERS_PER_MILE = 1609.34;
+  const METERS_PER_FOOT = 0.3048;
+  const miles = meters / METERS_PER_MILE;
 
-  // If distance is 1000 meters or more, show in miles
-  if (meters >= 1000) {
-    const miles = meters / METERS_PER_MILE;
-    return `${miles.toFixed(1)} mi`;
+  // If less than 0.1 miles, show in feet
+  if (miles < 0.1) {
+    const feet = meters / METERS_PER_FOOT;
+    return `${Math.round(feet)} ft`;
   }
 
-  // Otherwise show in meters
-  return `${Math.round(meters)} m`;
+  // Otherwise show in miles
+  return `${miles.toFixed(1)} mi`;
 }

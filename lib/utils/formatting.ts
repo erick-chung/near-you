@@ -62,5 +62,6 @@ export function convertPriceLevel(priceLevel?: string): string | undefined {
     PRICE_LEVEL_VERY_EXPENSIVE: "$$$$",
   };
 
-  return priceLevelMap[priceLevel];
+  return priceLevelMap[priceLevel]; // We specifically use brackets because you need brackets when the key is stored in a variable
+  // Without brackets, you would have to do dot notation and you cant use variables for that/
 }
