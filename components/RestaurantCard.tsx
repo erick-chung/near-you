@@ -1,4 +1,5 @@
 import { Restaurant } from "@/lib/types";
+import { formatDistance } from "@/lib/utils/distance";
 import { Star, MapPin } from "lucide-react";
 
 export default function RestaurantCard({
@@ -101,7 +102,9 @@ export default function RestaurantCard({
 
       {/* Distance */}
       <div className="pt-3 border-t border-border">
-        <p className="text-sm font-medium text-primary">{distance} mi away</p>
+        <p className="text-sm font-medium text-primary">
+          {formatDistance(distance)}
+        </p>
       </div>
     </div>
   );

@@ -6,70 +6,49 @@ import RestaurantList from "@/components/RestaurantList";
 import SearchForm from "@/components/SearchForm";
 import type { Restaurant } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { searchRestaurants } from "@/lib/actions/places.action";
 
 export default function ResultsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
 
   // Setup useSearchParams from Next.js
   const searchParams = useSearchParams();
 
-  // Extract values from URL
-  const address = searchParams.get("address"); // brooklyn
-  const radius = searchParams.get("radius"); // 5 (as a string)
+  // Extract values from URL (Add default values for numbers just incase its null)
+  const address = searchParams.get("address");
+  const radius = Number(searchParams.get("radius")) || 1000;
+  const lat = Number(searchParams.get("lat")) || 0;
+  const lng = Number(searchParams.get("lng")) || 0;
 
-  // Mock data
-  const sampleRestaurants: Restaurant[] = [
-    {
-      id: "1",
-      name: "The Golden Spoon",
-      address: "123 Main Street, Downtown",
-      coordinates: { lat: 40.7128, lng: -74.006 },
-      rating: 4.5,
-      reviewCount: 342,
-      priceLevel: "$$",
-      cuisineType: ["Italian", "Mediterranean"],
-      distance: 0.3,
-      isOpen: true,
-    },
-    {
-      id: "2",
-      name: "Sakura Sushi Bar",
-      address: "456 Oak Avenue, Midtown",
-      coordinates: { lat: 40.7589, lng: -73.9851 },
-      rating: 4.8,
-      reviewCount: 521,
-      priceLevel: "$$$",
-      cuisineType: ["Japanese", "Sushi"],
-      distance: 0.5,
-      isOpen: true,
-    },
-    {
-      id: "3",
-      name: "Burger Haven",
-      address: "789 Elm Street, West Side",
-      coordinates: { lat: 40.7489, lng: -73.968 },
-      rating: 4.2,
-      reviewCount: 189,
-      priceLevel: "$",
-      cuisineType: ["American", "Burgers"],
-      distance: 0.7,
-      isOpen: false,
-    },
-    {
-      id: "4",
-      name: "Spice Route",
-      address: "321 Pine Road, East District",
-      coordinates: { lat: 40.7282, lng: -73.9942 },
-      rating: 4.6,
-      reviewCount: 267,
-      priceLevel: "$$",
-      cuisineType: ["Indian", "Curry"],
-      distance: 1.2,
-      isOpen: true,
-    },
-  ];
+  useEffect(() => {
+    async function getRestaurants() {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const results = await searchRestaurants({
+          coordinates: {
+            lat,
+            lng,
+          },
+          radius,
+        });
+        if (!results) throw new Error("Unable to search restaurants");
+        setRestaurants(results);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unexpected error occurred");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    getRestaurants();
+  }, [lat, lng, radius]);
 
   return (
     <main className="min-h-screen bg-background">
@@ -82,7 +61,7 @@ export default function ResultsPage() {
           <LoadingSpinner />
         ) : error ? (
           <ErrorMessage message={error} />
-        ) : sampleRestaurants.length > 0 ? (
+        ) : restaurants.length > 0 ? (
           <>
             <header className="mb-8 sm:mb-10 space-y-4">
               <div className="space-y-2">
@@ -97,16 +76,14 @@ export default function ResultsPage() {
               </div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 ring-1 ring-primary/20">
                 <span className="text-sm font-medium text-primary">
-                  {`${sampleRestaurants.length} ${
-                    sampleRestaurants.length === 1
-                      ? "restaurant"
-                      : "restaurants"
+                  {`${restaurants.length} ${
+                    restaurants.length === 1 ? "restaurant" : "restaurants"
                   } found `}
                 </span>
               </div>
             </header>
             <div className="flex flex-col gap-4 sm:gap-6">
-              <RestaurantList restaurants={sampleRestaurants} />
+              <RestaurantList restaurants={restaurants} />
             </div>
           </>
         ) : (

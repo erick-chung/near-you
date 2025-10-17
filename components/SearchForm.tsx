@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UtensilsCrossed } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AddressSearch } from "./AddressSearch";
@@ -10,7 +10,7 @@ import { geocodeAddress } from "@/lib/actions/geocoding.action";
 interface SearchFormProps {
   compact?: boolean;
   address?: string | null;
-  radius?: string | null;
+  radius?: number | null;
 }
 
 export default function SearchForm({
@@ -21,9 +21,7 @@ export default function SearchForm({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [address, setAddress] = useState(initialAddress || "");
-  const [radius, setRadius] = useState(
-    initialRadius ? Number(initialRadius) : 1609
-  ); // Default 1 mile
+  const [radius, setRadius] = useState(initialRadius || 1609); // Default 1 mile
   const router = useRouter();
 
   const handleSearch = async () => {
@@ -56,6 +54,16 @@ export default function SearchForm({
     setAddress(newAddress);
     if (error) setError(null);
   };
+
+  useEffect(() => {
+    if (compact && initialAddress) {
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.set("radius", radius.toString());
+
+      // Update URL without navigation
+      window.history.replaceState(null, "", `?${searchParams.toString()}`);
+    }
+  }, [radius, compact, initialAddress]);
 
   return (
     <div className={compact ? "space-y-2" : "space-y-4"}>
