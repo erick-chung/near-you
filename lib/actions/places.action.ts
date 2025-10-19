@@ -17,7 +17,6 @@ export async function searchRestaurants(
   try {
     // Step 1: Get API key and validate it exists
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-    console.log("API KEY EXISTS", !!apiKey); // double negation -> converts any value to boolean
     if (!apiKey) {
       throw new Error("Google Maps API key is not configured");
     }

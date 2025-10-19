@@ -8,11 +8,23 @@ import type { Restaurant } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { searchRestaurants } from "@/lib/actions/places.action";
+import { FilterBar, FilterOptions, SortOption } from "@/components/FilterBar";
+import { filterRestaurants, sortRestaurants } from "@/lib/utils/filtering";
 
 export default function ResultsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [processedRestaurants, setProcessedRestaurants] = useState<
+    Restaurant[]
+  >([]);
+  const [sortBy, setSortBy] = useState<SortOption>("distance");
+  const [filters, setFilters] = useState<FilterOptions>({
+    priceLevel: [],
+    minRating: null,
+    openNow: true,
+    cuisineType: [],
+  });
 
   // Setup useSearchParams from Next.js
   const searchParams = useSearchParams();
@@ -50,6 +62,21 @@ export default function ResultsPage() {
     getRestaurants();
   }, [lat, lng, radius]);
 
+  useEffect(() => {
+    if (!restaurants || restaurants.length === 0) return;
+
+    // The order of operations actually matters here. It's important to filter first and THEN SORT. Why? Because 1. why sort something if youre just gonna end up filtering it out anyways. 2. Filtering first produces a smaller array and reduces the dataset so there's fewer things to sort = BETTER PERFORMANCE
+
+    // Filter logic
+    const filteredRestaurants = filterRestaurants(restaurants, filters);
+    // Sorting logic
+
+    const sortedRestaurants = sortRestaurants(filteredRestaurants, sortBy);
+
+    // Set Processed data
+    setProcessedRestaurants(sortedRestaurants);
+  }, [restaurants, sortBy, filters]);
+
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
@@ -76,14 +103,25 @@ export default function ResultsPage() {
               </div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 ring-1 ring-primary/20">
                 <span className="text-sm font-medium text-primary">
-                  {`${restaurants.length} ${
-                    restaurants.length === 1 ? "restaurant" : "restaurants"
+                  {`${processedRestaurants.length} ${
+                    processedRestaurants.length === 1
+                      ? "restaurant"
+                      : "restaurants"
                   } found `}
                 </span>
               </div>
             </header>
+            <div className="mb-6">
+              <FilterBar
+                sortBy={sortBy}
+                filters={filters}
+                onSortChange={setSortBy}
+                onFilterChange={setFilters}
+              />
+            </div>
+
             <div className="flex flex-col gap-4 sm:gap-6">
-              <RestaurantList restaurants={restaurants} />
+              <RestaurantList restaurants={processedRestaurants} />
             </div>
           </>
         ) : (

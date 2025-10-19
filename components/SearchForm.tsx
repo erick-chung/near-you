@@ -55,6 +55,7 @@ export default function SearchForm({
     if (error) setError(null);
   };
 
+  // We want to automatically re-search whenever the radius changes cuz that counts as new search criteria (String, convert to object, modify object, convert back to string)
   useEffect(() => {
     if (compact && initialAddress) {
       const searchParams = new URLSearchParams(window.location.search);
