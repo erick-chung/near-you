@@ -1,5 +1,4 @@
 "use client";
-
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import RestaurantList from "@/components/RestaurantList";
@@ -10,6 +9,7 @@ import { useEffect, useState } from "react";
 import { searchRestaurants } from "@/lib/actions/places.action";
 import { FilterBar, FilterOptions, SortOption } from "@/components/FilterBar";
 import { filterRestaurants, sortRestaurants } from "@/lib/utils/filtering";
+import MapView from "@/components/MapView";
 
 export default function ResultsPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,8 @@ export default function ResultsPage() {
   const searchParams = useSearchParams();
 
   // Extract values from URL (Add default values for numbers just incase its null)
-  const address = searchParams.get("address");
+  const originalAddress = searchParams.get("address");
+  const address = originalAddress || "Current Location";
   const radius = Number(searchParams.get("radius")) || 1000;
   const lat = Number(searchParams.get("lat")) || 0;
   const lng = Number(searchParams.get("lng")) || 0;
@@ -93,8 +94,8 @@ export default function ResultsPage() {
             <header className="mb-8 sm:mb-10 space-y-4">
               <div className="space-y-2">
                 <h1 className="font-sans font-bold text-3xl sm:text-4xl text-foreground text-balance">
-                  {address
-                    ? `Restaurants near ${address}`
+                  {originalAddress
+                    ? `Restaurants near ${originalAddress}`
                     : "Restaurants Near You"}
                 </h1>
                 <p className="text-muted-foreground leading-relaxed text-base sm:text-lg">
@@ -120,8 +121,23 @@ export default function ResultsPage() {
               />
             </div>
 
-            <div className="flex flex-col gap-4 sm:gap-6">
-              <RestaurantList restaurants={processedRestaurants} />
+            <div className="flex flex-col xl:flex-row gap-6">
+              <div className="w-full xl:w-1/2">
+                <div className="xl:max-h-[calc(100vh-200px)] xl:overflow-y-auto xl:pr-2">
+                  <RestaurantList restaurants={processedRestaurants} />
+                </div>
+              </div>
+
+              <div className="w-full xl:w-1/2 xl:sticky xl:top-4 xl:self-start">
+                <div className="h-[400px] xl:h-[calc(100vh-200px)] xl:min-h-[600px]">
+                  <MapView
+                    coordinates={{ lat, lng }}
+                    processedRestaurants={processedRestaurants}
+                    searchLocation={address}
+                    isLoading={isLoading}
+                  />
+                </div>
+              </div>
             </div>
           </>
         ) : (
