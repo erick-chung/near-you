@@ -44,15 +44,20 @@ export default function MapView({
   const fitMapBounds = () => {
     if (!map || processedRestaurants.length === 0) return;
 
+    // Create an invisible rectangle
     const bounds = new google.maps.LatLngBounds();
+
+    // Now expand the rectangle to include each location
 
     // Add search location
     bounds.extend(coordinates);
 
-    // Add all restaurant locations
+    // Add all restaurant locations (EXPAND THE COORDINATES FOR EACH RESTAURANT)
     processedRestaurants.forEach((restaurant) => {
       bounds.extend(restaurant.coordinates);
     });
+
+    // So each extend call makes the invisible rectangle bigger if needed to include that point
 
     map.fitBounds(bounds, 50);
 
