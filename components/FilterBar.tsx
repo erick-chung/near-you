@@ -67,9 +67,9 @@ export function FilterBar({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const activeFilterCount =
-    filters.priceLevel.length + // How many priceLevels are selected
-    filters.cuisineType.length + // How many cuisine types are selected
-    (filters.minRating !== null ? 1 : 0) + // 1 if
+    filters.priceLevel.length +
+    filters.cuisineType.length +
+    (filters.minRating !== null ? 1 : 0) +
     (filters.openNow ? 1 : 0);
 
   const handlePriceLevelToggle = (priceLevel: string) => {
@@ -97,7 +97,7 @@ export function FilterBar({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full animate-in slide-in-from-top-4 fade-in duration-500">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full bg-card/80 backdrop-blur-sm border border-border rounded-xl p-4 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 group"

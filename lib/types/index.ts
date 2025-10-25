@@ -74,3 +74,8 @@ export interface GooglePlace {
     name: string;
   }>;
 }
+
+export interface Coordinates {
+  lat: number;
+  lng: number;
+}

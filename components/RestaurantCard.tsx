@@ -1,11 +1,13 @@
-import { Restaurant } from "@/lib/types";
+import type { Restaurant } from "@/lib/types";
 import { formatDistance } from "@/lib/utils/distance";
 import { Star, MapPin } from "lucide-react";
 
-export default function RestaurantCard({
+export function RestaurantCard({
   restaurant,
+  index = 0,
 }: {
   restaurant: Restaurant;
+  index?: number;
 }) {
   const {
     name,
@@ -47,7 +49,13 @@ export default function RestaurantCard({
   };
 
   return (
-    <div className="bg-card rounded-xl shadow-md p-4 border border-border hover:shadow-lg transition-shadow">
+    <div
+      className="bg-card rounded-xl shadow-md p-4 border border-border hover:shadow-lg transition-all duration-300 hover:scale-[1.02] animate-in fade-in slide-in-from-bottom-4"
+      style={{
+        animationDelay: `${index * 50}ms`,
+        animationFillMode: "backwards",
+      }}
+    >
       {/* Header with name and open/closed badge */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <h3 className="font-sans font-semibold text-lg text-card-foreground leading-tight text-balance">
@@ -103,7 +111,7 @@ export default function RestaurantCard({
       {/* Distance */}
       <div className="pt-3 border-t border-border">
         <p className="text-sm font-medium text-primary">
-          {formatDistance(distance)}
+          {formatDistance(distance)} away
         </p>
       </div>
     </div>

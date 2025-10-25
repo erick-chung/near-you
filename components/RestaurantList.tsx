@@ -1,15 +1,22 @@
-import { Restaurant } from "@/lib/types";
+import type { Restaurant } from "@/lib/types";
+import { RestaurantCard } from "./RestaurantCard";
+import RestaurantCardSkeleton from "./RestaurantCardSkeleton";
 import { UtensilsCrossed } from "lucide-react";
-import RestaurantCard from "./RestaurantCard";
 
-export default function RestaurantList({
+export function RestaurantList({
   restaurants,
+  isLoading,
 }: {
   restaurants: Restaurant[];
+  isLoading: boolean;
 }) {
   return (
     <>
-      {restaurants.length === 0 ? (
+      {isLoading ? (
+        Array.from({ length: 6 }).map((_, i) => (
+          <RestaurantCardSkeleton key={i} />
+        ))
+      ) : restaurants.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <UtensilsCrossed className="w-10 h-10 text-primary/60" />
@@ -23,17 +30,14 @@ export default function RestaurantList({
           </p>
         </div>
       ) : (
-        restaurants.map((restaurant) => (
-          <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+        restaurants.map((restaurant, index) => (
+          <RestaurantCard
+            key={restaurant.id}
+            restaurant={restaurant}
+            index={index}
+          />
         ))
       )}
     </>
   );
 }
-
-// When doing conditional rendering in the future, follow this format (WRAP EACH PART IN PARENTHESES):
-// {condition ? (
-//   <JSX />
-// ) : (
-//   <OtherJSX />
-// )}

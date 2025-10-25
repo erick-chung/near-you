@@ -5,15 +5,20 @@ import { useRouter } from "next/navigation";
 import { AddressSearch } from "./AddressSearch";
 import { RadiusSelector } from "./RadiusSelector";
 import { geocodeAddress } from "@/lib/actions/geocoding.action";
+import { Coordinates } from "@/lib/types";
 
 interface SearchFormProps {
   compact?: boolean;
+  externalAddress?: string; // Adding the ? means it could be either string or undefined
+  externalCoordinates?: Coordinates | null;
   address?: string | null;
   radius?: number | null;
 }
 
 export default function SearchForm({
   compact,
+  externalAddress,
+  externalCoordinates,
   address: initialAddress,
   radius: initialRadius,
 }: SearchFormProps) {
@@ -21,10 +26,7 @@ export default function SearchForm({
   const [error, setError] = useState<string | null>(null);
   const [address, setAddress] = useState(initialAddress || "");
   const [radius, setRadius] = useState(initialRadius || 805); // Default 0.5 mile
-  const [coordinates, setCoordinates] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
   const [searches, setSearches] = useState<string[]>(() => {
     try {
       const stored = localStorage.getItem("searches");
@@ -34,6 +36,14 @@ export default function SearchForm({
     }
   });
   const router = useRouter();
+
+  // const navigateToResults = useEffectEvent(() => {
+  //   if (externalCoordinates) {
+  //     router.push(
+  //       `/results?address=${externalAddress}&lat=${externalCoordinates.lat}&lng=${externalCoordinates.lng}&radius=${radius}`
+  //     );
+  //   }
+  // });
 
   const handleSearch = async (
     directCoordinates?: {
@@ -70,7 +80,6 @@ export default function SearchForm({
         if (!result) throw new Error("Could not fetch coordinates");
       }
 
-      console.log(result);
       router.push(
         `/results?address=${result.formatted}&lat=${result.coordinates.lat}&lng=${result.coordinates.lng}&radius=${radius}`
       );
@@ -134,6 +143,7 @@ export default function SearchForm({
   // We want to automatically re-search whenever the radius changes cuz that counts as new search criteria
   useEffect(() => {
     if (compact && initialAddress) {
+      // We specifically use this method for the radius because we're already on the results page. So we're just simply changing the parameter portion of the url
       const searchParams = new URLSearchParams(window.location.search);
       searchParams.set("radius", radius.toString());
       // Update URL without navigation
@@ -141,10 +151,28 @@ export default function SearchForm({
     }
   }, [radius, compact, initialAddress]);
 
+  // For the external coordinates, we can't do the window.location.search & searchParams method because we're on the home page. We have to navigate to the results page upon getting the results using router.push
+  useEffect(() => {
+    if (externalAddress && externalCoordinates) {
+      router.push(
+        `/results?address=${externalAddress}&lat=${externalCoordinates.lat}&lng=${externalCoordinates.lng}&radius=${radius}`
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [externalAddress, externalCoordinates]);
+
   useEffect(() => {
     localStorage.setItem("searches", JSON.stringify(searches));
   }, [searches]);
 
+  useEffect(() => {
+    // Because external address is optional (if user doesnt click on getlocation button), it can be undefined. So make sure that it's not undefined by doing an if check first before setting address to avoid type errors
+    if (externalAddress) setAddress(externalAddress);
+  }, [externalAddress]); // Only runs when external address changes
+
+  useEffect(() => {
+    if (externalCoordinates) setCoordinates(externalCoordinates);
+  }, [externalCoordinates]); // Only runs when external coordinates changes
   return (
     <div className={compact ? "space-y-2" : "space-y-4"}>
       <AddressSearch

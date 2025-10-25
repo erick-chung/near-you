@@ -1,7 +1,6 @@
 "use client";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
-import RestaurantList from "@/components/RestaurantList";
+import { RestaurantList } from "@/components/RestaurantList";
 import SearchForm from "@/components/SearchForm";
 import type { Restaurant } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
@@ -85,11 +84,9 @@ export default function ResultsPage() {
           <SearchForm compact={true} address={address} radius={radius} />
         </div>
 
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : error ? (
+        {error ? (
           <ErrorMessage message={error} />
-        ) : restaurants.length > 0 ? (
+        ) : (
           <>
             <header className="mb-8 sm:mb-10 space-y-4">
               <div className="space-y-2">
@@ -124,7 +121,10 @@ export default function ResultsPage() {
             <div className="flex flex-col xl:flex-row gap-6">
               <div className="w-full xl:w-1/2">
                 <div className="xl:max-h-[calc(100vh-200px)] xl:overflow-y-auto xl:pr-2">
-                  <RestaurantList restaurants={processedRestaurants} />
+                  <RestaurantList
+                    restaurants={processedRestaurants}
+                    isLoading={isLoading}
+                  />
                 </div>
               </div>
 
@@ -140,8 +140,6 @@ export default function ResultsPage() {
               </div>
             </div>
           </>
-        ) : (
-          <div>No restaurants found</div>
         )}
       </div>
     </main>
