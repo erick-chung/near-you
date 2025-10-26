@@ -57,26 +57,28 @@ export default function SearchForm({
 
       // Use directAddress if provided, otherwise use state
       const addressToUse = directAddress || address;
+      // Use trimmedAddress instead of directaddress in the search because that uses a cleaner address with no extra spaces
+      const trimmedAddress = addressToUse.trim()
 
-      if (!addressToUse.trim()) throw new Error("Please enter an address!");
+      if (!trimmedAddress) throw new Error("Please enter an address!");
 
       // Use coordinates from parameter first, then state, then geocode
       let result;
       if (directCoordinates) {
         // Use coordinates passed directly from autocomplete
         result = {
-          formatted: addressToUse, // Use the direct address here
+          formatted: trimmedAddress,
           coordinates: directCoordinates,
         };
       } else if (coordinates) {
         // Use coordinates from state
         result = {
-          formatted: addressToUse,
+          formatted: trimmedAddress,
           coordinates: coordinates,
         };
       } else {
         // Fall back to geocoding
-        result = await geocodeAddress(addressToUse);
+        result = await geocodeAddress(trimmedAddress);
         if (!result) throw new Error("Could not fetch coordinates");
       }
 
@@ -95,6 +97,7 @@ export default function SearchForm({
       const limitedSearches = filteredSearches.slice(0, limit);
       setSearches([result.formatted, ...limitedSearches]);
     } catch (err) {
+      console.error("Search form error:", err)
       if (err instanceof Error) {
         setError(err.message);
       } else {

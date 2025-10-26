@@ -4,6 +4,7 @@ import { API_ENDPOINTS, PLACES_API_BASE_URL } from "@/config/constants";
 import { GooglePlace, Restaurant, SearchParams } from "../types";
 import { convertPriceLevel } from "../utils/formatting";
 import { calculateDistance } from "../utils/distance";
+import { retryWithBackoff } from "../utils/retry";
 
 /**
  * Searches for nearby restaurants using Google Places API
@@ -14,11 +15,14 @@ import { calculateDistance } from "../utils/distance";
 export async function searchRestaurants(
   params: SearchParams
 ): Promise<Restaurant[]> {
-  try {
+  return await retryWithBackoff(async() => { // The reason why were just directly returning retryWithBackoff instead of doing const result = await retrywithbackoff is because were not doign anythign with the result. we jusr want it right away so you can just direct return.
+    try {
     // Step 1: Get API key and validate it exists
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
-      throw new Error("Google Maps API key is not configured");
+      throw new Error(
+        "Service temporarily unavailable. Please try again later"
+      );
     }
 
     // Step 2: Build the API URL
@@ -54,7 +58,13 @@ export async function searchRestaurants(
     });
 
     // Step 4: Check if HTTP request was successful
-    if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
+    if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error("Too many requests. Please wait a moment.");
+      } else {
+        throw new Error("Connection issue. Please check your internet.");
+      }
+    }
 
     // Step 5: Parse the JSON response
     const data = await response.json();
@@ -104,7 +114,11 @@ export async function searchRestaurants(
     restaurants.sort((a, b) => a.distance - b.distance);
     return restaurants;
   } catch (err) {
-    console.error(err);
+    console.error("Restaurant search failed:", err)
+      if (err instanceof TypeError && err.message.includes('fetch')) { // Network failures create typeerrors (TypeError: fetch failed)
+      throw new Error("Connection issue. Please check your internet.")
+    }
     throw err;
   }
+  })
 }

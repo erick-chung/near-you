@@ -34,8 +34,14 @@ export function AddressSearch({
   searches,
 }: AddressSearchProps) {
   const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const isValidInput = (input: string): boolean => {
+    return input.trim().length >= 3;
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    
+    if (e.key === "Enter" && isValidInput(value)) {
       onSearch();
     }
   };
@@ -59,9 +65,14 @@ export function AddressSearch({
               onLoad={(autocomplete) => {
                 autocompleteRef.current = autocomplete;
               }}
-              onPlaceChanged={() => {
+              onPlaceChanged={() => { // Callback back provided by Google Maps API specifically for the Autocomplete component. It's a function that Google's autocomplete system automatically calls when a user selects a place from the dropdown suggestions. => Why does it exist? Google needs a way to tell your code "Hey the user picked a place from my suggestions list. Here's the data for that place"...From this function you get accfess to getPlace(), which provides data such as the coordinates and formatted address
                 if (autocompleteRef.current) {
-                  const place = autocompleteRef.current.getPlace();
+                  const place = autocompleteRef.current.getPlace(); // .getPlace() is a Google method that says "give me the place the user selected". => place is an object with address, coordinates, etc
+
+                  if (!place || !place.formatted_address) {
+                    console.log("No valid place found from autocomplete")
+                    return;
+                  }
                   if (place.formatted_address) {
                     if (place.geometry?.location) {
                       const lat = place.geometry.location.lat();
@@ -104,8 +115,10 @@ export function AddressSearch({
           </div>
         </div>
         <Button
-          onClick={() => onSearch()}
-          disabled={isLoading}
+          onClick={() => {
+            if (isValidInput(value)) onSearch()
+          }}
+          disabled={isLoading || !isValidInput(value)}
           size="icon"
           className={`shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground ${
             compact ? "h-9 w-9" : "h-11 w-11"

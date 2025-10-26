@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
-import { Suspense } from "react";
 import Header from "@/components/layout/Header";
 import GoogleMapsProvider from "@/components/GoogleMapsProvider";
 import "./globals.css";
@@ -25,7 +24,7 @@ export default function RootLayout({
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <GoogleMapsProvider>
           <Header />
-          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+         {children}
         </GoogleMapsProvider>
         <Analytics />
       </body>

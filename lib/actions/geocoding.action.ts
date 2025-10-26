@@ -2,6 +2,7 @@
 
 import { API_ENDPOINTS, GEOCODING_API_BASE_URL } from "@/config/constants";
 import { Address } from "@/lib/types/index";
+import { retryWithBackoff } from "../utils/retry";
 /**
  * Geocodes an address string into coordinates and formatted address
  * @param address - The address string to geocode
@@ -9,11 +10,14 @@ import { Address } from "@/lib/types/index";
  * @throws Error if API key is missing, address not found, or API request fails
  */
 export async function geocodeAddress(address: string): Promise<Address> {
-  try {
+ return await retryWithBackoff(async() => {
+   try {
     // Step 1: Get API key and validate it exists
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
-      throw new Error("Google Maps API key is not configured");
+      throw new Error(
+        "Service temporarily unavailable. Please try again later"
+      );
     }
 
     // Step 2: Build the API URL
@@ -26,7 +30,11 @@ export async function geocodeAddress(address: string): Promise<Address> {
 
     // Step 4: Check if the HTTP request was successful
     if (!response.ok) {
-      throw new Error(`HTTP Error! Status: ${response.status}`);
+      if (response.status === 429) {
+        throw new Error("Too many requests. Please wait a moment.");
+      } else {
+        throw new Error("Connection issue. Please check your internet.");
+      }
     }
 
     // Step 5: Parse the JSON response
@@ -57,17 +65,26 @@ export async function geocodeAddress(address: string): Promise<Address> {
       },
     };
   } catch (err) {
-    console.error(err);
+    console.error("Geocoding failed:", err)
+    // Handle network-level failures (Wifi off, DNS issues, etc)
+    if (err instanceof TypeError && err.message.includes('fetch')) { // Network failures create typeerrors (TypeError: fetch failed)
+      throw new Error("Connection issue. Please check your internet.")
+    }
+    // Re-throw other errors
     throw err; // If you have specific throw new Error messages in catch block, you need to just rethrow here by doing throw err, instead of throw new Error("Error message") or else it will replace original message
   }
+ })
 }
 
 export async function reverseGeocodeCoordinates(lat: number, lng: number) {
-  try {
+  return await retryWithBackoff(async() => {
+    try {
     // Step 1: Get API key and validate it exists
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
-      throw new Error("Google Maps API key is not configured");
+      throw new Error(
+        "Service temporarily unavailable. Please try again later"
+      );
     }
 
     // Step 2: Build the API URL
@@ -79,7 +96,11 @@ export async function reverseGeocodeCoordinates(lat: number, lng: number) {
 
     // Step 4: Check if the HTTP request was successful
     if (!response.ok) {
-      throw new Error(`HTTP Error! Status: ${response.status}`);
+      if (response.status === 429) {
+        throw new Error("Too many requests. Please wait a moment.");
+      } else {
+        throw new Error("Connection issue. Please check your internet.");
+      }
     }
 
     // Step 5: Parse the JSON response
@@ -104,7 +125,11 @@ export async function reverseGeocodeCoordinates(lat: number, lng: number) {
     // Step 8: Return result
     return result;
   } catch (err) {
-    console.error(err);
+    console.error("Reverse geocoding failed:", err)
+      if (err instanceof TypeError && err.message.includes('fetch')) { // Network failures create typeerrors (TypeError: fetch failed)
+      throw new Error("Connection issue. Please check your internet.")
+    }
     throw err;
   }
+  })
 }

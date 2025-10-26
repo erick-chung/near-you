@@ -6,6 +6,7 @@ interface RadiusSelectorProps {
   compact?: boolean;
 }
 
+// It's good to use predefined options because it prevents invalid selections
 const RADIUS_OPTIONS = [
   { label: "0.5 mi", value: 805 },
   { label: "1 mi", value: 1609 },
@@ -13,11 +14,27 @@ const RADIUS_OPTIONS = [
   { label: "5 mi", value: 8047 },
 ];
 
+
+
 export function RadiusSelector({
   value,
   onChange,
   compact,
 }: RadiusSelectorProps) {
+
+  const isValidRadius = (radius: number): boolean => {
+  return RADIUS_OPTIONS.some(option => option.value === radius)
+}
+
+  const getCurrentRadius = (): number => {
+  if (isValidRadius(value)) {
+    return value;
+  }
+  return RADIUS_OPTIONS[0].value
+}
+
+
+const currentRadius = getCurrentRadius();
   return (
     <div className="w-full">
       <label
@@ -35,7 +52,7 @@ export function RadiusSelector({
             className={`rounded-lg font-semibold transition-all ${
               compact ? "h-9 text-xs" : "h-11 text-sm"
             } ${
-              value === option.value
+              currentRadius === option.value
                 ? "bg-primary text-primary-foreground ring-2 ring-primary/20 shadow-sm"
                 : "bg-card text-muted-foreground border border-border hover:border-primary/50 hover:text-foreground"
             }`}
