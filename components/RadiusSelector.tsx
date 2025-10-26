@@ -1,11 +1,9 @@
 "use client";
-
 interface RadiusSelectorProps {
   value: number;
   onChange: (value: number) => void;
   compact?: boolean;
 }
-
 // It's good to use predefined options because it prevents invalid selections
 const RADIUS_OPTIONS = [
   { label: "0.5 mi", value: 805 },
@@ -13,43 +11,38 @@ const RADIUS_OPTIONS = [
   { label: "2 mi", value: 3219 },
   { label: "5 mi", value: 8047 },
 ];
-
-
-
 export function RadiusSelector({
   value,
   onChange,
   compact,
 }: RadiusSelectorProps) {
-
   const isValidRadius = (radius: number): boolean => {
-  return RADIUS_OPTIONS.some(option => option.value === radius)
-}
-
-  const getCurrentRadius = (): number => {
-  if (isValidRadius(value)) {
-    return value;
+    return RADIUS_OPTIONS.some(option => option.value === radius)
   }
-  return RADIUS_OPTIONS[0].value
-}
-
-
-const currentRadius = getCurrentRadius();
+  const getCurrentRadius = (): number => {
+    if (isValidRadius(value)) {
+      return value;
+    }
+    return RADIUS_OPTIONS[0].value
+  }
+  const currentRadius = getCurrentRadius();
   return (
-    <div className="w-full">
-      <label
+    <fieldset className="w-full">
+      <legend
         className={`block font-medium text-foreground ${
           compact ? "text-xs mb-1.5" : "text-sm mb-2"
         }`}
       >
         Search Radius
-      </label>
-      <div className="grid grid-cols-4 gap-2">
+      </legend>
+      <div className="grid grid-cols-4 gap-2" aria-label="Select search radius">
         {RADIUS_OPTIONS.map((option) => (
           <button
             key={option.value}
             onClick={() => onChange(option.value)}
-            className={`rounded-lg font-semibold transition-all ${
+            aria-pressed={currentRadius === option.value}
+            aria-label={`Search within ${option.label}`}
+            className={`rounded-lg font-semibold transition-all focus-visible:outline-4 focus-visible:outline-orange-500 focus-visible:outline-offset-2 focus-visible:ring-4 focus-visible:ring-orange-500/50 ${
               compact ? "h-9 text-xs" : "h-11 text-sm"
             } ${
               currentRadius === option.value
@@ -61,6 +54,6 @@ const currentRadius = getCurrentRadius();
           </button>
         ))}
       </div>
-    </div>
+    </fieldset>
   );
 }

@@ -9,11 +9,12 @@ export default function Header() {
           <Link
             href="/"
             className="flex items-center gap-3 transition-all hover:opacity-80 hover:scale-[1.02] active:scale-[0.98]"
+            aria-label="NearYou - Go to homepage"
           >
             <div className="relative">
               <Image
                 src="/near-you-logo.png"
-                alt="NearYou"
+                alt="NearYou logo"
                 width={140}
                 height={48}
                 priority
@@ -21,8 +22,7 @@ export default function Header() {
               />
             </div>
           </Link>
-
-          <p className="hidden sm:block text-sm text-muted-foreground font-medium">
+          <p className="hidden sm:block text-sm text-muted-foreground font-medium" aria-hidden="true">
             Discover places before you go
           </p>
         </div>

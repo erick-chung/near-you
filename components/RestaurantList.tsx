@@ -13,13 +13,15 @@ export function RestaurantList({
   return (
     <>
       {isLoading ? (
-        Array.from({ length: 6 }).map((_, i) => (
-          <RestaurantCardSkeleton key={i} />
-        ))
+        <div aria-live="polite" aria-label="Loading restaurants">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <RestaurantCardSkeleton key={i} />
+          ))}
+        </div>
       ) : restaurants.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4">
+        <section className="flex flex-col items-center justify-center py-16 px-4" aria-label="No restaurants found">
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-            <UtensilsCrossed className="w-10 h-10 text-primary/60" />
+            <UtensilsCrossed className="w-10 h-10 text-primary/60" aria-hidden="true" />
           </div>
           <h3 className="font-sans font-semibold text-xl text-foreground mb-2 text-balance text-center">
             No restaurants found
@@ -28,15 +30,17 @@ export function RestaurantList({
             Sorry, we couldn't find any restaurants in your area. Try adjusting
             your location or search criteria.
           </p>
-        </div>
+        </section>
       ) : (
-        restaurants.map((restaurant, index) => (
-          <RestaurantCard
-            key={restaurant.id}
-            restaurant={restaurant}
-            index={index}
-          />
-        ))
+        <div role="feed" aria-label="Restaurant results">
+          {restaurants.map((restaurant, index) => (
+            <RestaurantCard
+              key={restaurant.id}
+              restaurant={restaurant}
+              index={index}
+            />
+          ))}
+        </div>
       )}
     </>
   );

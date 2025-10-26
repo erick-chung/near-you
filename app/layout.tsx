@@ -11,7 +11,18 @@ export const metadata: Metadata = {
   title: "NearYou - Find Restaurants Near Any Location",
   description:
     "Discover great places to eat and drink near any address, even before you get there.",
-  generator: "v0.app",
+  viewport: "width=device-width, initial-scale=1",
+  openGraph: {
+    title: "NearYou - Find Restaurants Near Any Location",
+    description: "Discover great places to eat and drink near any address, even before you get there.",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NearYou - Find Restaurants Near Any Location",
+    description: "Discover great places to eat and drink near any address, even before you get there.",
+  },
 };
 
 export default function RootLayout({
@@ -24,7 +35,7 @@ export default function RootLayout({
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <GoogleMapsProvider>
           <Header />
-         {children}
+          {children}
         </GoogleMapsProvider>
         <Analytics />
       </body>

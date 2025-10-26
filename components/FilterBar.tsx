@@ -100,12 +100,15 @@ export function FilterBar({
     <div className="w-full animate-in slide-in-from-top-4 fade-in duration-500">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
+        aria-controls="filter-content"
+        aria-label="Toggle filters and sort options"
         className="w-full bg-card/80 backdrop-blur-sm border border-border rounded-xl p-4 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 group"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-              <SlidersHorizontal className="h-5 w-5 text-primary" />
+              <SlidersHorizontal className="h-5 w-5 text-primary" aria-hidden="true" />
             </div>
             <div className="text-left">
               <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -130,12 +133,14 @@ export function FilterBar({
               className={`h-5 w-5 text-muted-foreground group-hover:text-primary transition-all duration-300 ${
                 isExpanded ? "rotate-180" : ""
               }`}
+              aria-hidden="true"
             />
           </div>
         </div>
       </button>
 
       <div
+        id="filter-content"
         className={`overflow-hidden transition-all duration-300 ease-in-out ${
           isExpanded ? "max-h-[2000px] opacity-100 mt-3" : "max-h-0 opacity-0"
         }`}
@@ -150,7 +155,7 @@ export function FilterBar({
               value={sortBy}
               onValueChange={(value) => onSortChange(value as SortOption)}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full" aria-label="Sort restaurants by">
                 <SelectValue placeholder="Select sort option" />
               </SelectTrigger>
               <SelectContent>
@@ -163,11 +168,11 @@ export function FilterBar({
           </div>
 
           {/* Price Level Filter */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
-              <DollarSign className="h-4 w-4 text-primary" />
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-medium text-foreground flex items-center gap-1.5">
+              <DollarSign className="h-4 w-4 text-primary" aria-hidden="true" />
               Price Level
-            </label>
+            </legend>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {PRICE_LEVELS.map((price) => (
                 <label
@@ -177,6 +182,7 @@ export function FilterBar({
                   <Checkbox
                     checked={filters.priceLevel.includes(price.value)}
                     onCheckedChange={() => handlePriceLevelToggle(price.value)}
+                    aria-label={`Filter by ${price.description} (${price.label}) restaurants`}
                   />
                   <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                     {price.label}
@@ -184,14 +190,14 @@ export function FilterBar({
                 </label>
               ))}
             </div>
-          </div>
+          </fieldset>
 
           {/* Cuisine Type Filter */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
-              <UtensilsCrossed className="h-4 w-4 text-primary" />
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-medium text-foreground flex items-center gap-1.5">
+              <UtensilsCrossed className="h-4 w-4 text-primary" aria-hidden="true" />
               Cuisine Type
-            </label>
+            </legend>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {CUISINE_TYPES.map((cuisine) => (
                 <label
@@ -203,6 +209,7 @@ export function FilterBar({
                     onCheckedChange={() =>
                       handleCuisineTypeToggle(cuisine.value)
                     }
+                    aria-label={`Filter by ${cuisine.label} cuisine`}
                   />
                   <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                     {cuisine.label}
@@ -210,18 +217,20 @@ export function FilterBar({
                 </label>
               ))}
             </div>
-          </div>
+          </fieldset>
 
           {/* Minimum Rating Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium text-foreground">
               Minimum Rating
-            </label>
+            </legend>
             <div className="grid grid-cols-4 gap-2">
               {RATING_OPTIONS.map((option) => (
                 <button
                   key={option.label}
                   onClick={() => handleRatingChange(option.value)}
+                  aria-pressed={filters.minRating === option.value}
+                  aria-label={`Filter restaurants with ${option.label} rating`}
                   className={`rounded-lg h-9 text-sm font-semibold transition-all ${
                     filters.minRating === option.value
                       ? "bg-primary text-primary-foreground ring-2 ring-primary/20 shadow-sm"
@@ -232,7 +241,7 @@ export function FilterBar({
                 </button>
               ))}
             </div>
-          </div>
+          </fieldset>
 
           {/* Open Now Toggle */}
           <div className="flex items-center justify-between pt-1">
@@ -246,6 +255,7 @@ export function FilterBar({
               id="open-now"
               checked={filters.openNow}
               onCheckedChange={handleOpenNowToggle}
+              aria-label="Show only restaurants open now"
             />
           </div>
         </div>

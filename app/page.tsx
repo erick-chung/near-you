@@ -13,16 +13,17 @@ export default function HomePage() {
     setExternalAddress(address);
     if (coordinates) setExternalCoordinates(coordinates);
   };
+
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="mb-8">
+        <section className="mb-8" aria-label="Find restaurants near any location">
           <SearchForm
             externalAddress={externalAddress}
             externalCoordinates={externalCoordinates}
           />
           <GetLocationButton onSetAddress={handleSetAddress} />
-        </div>
+        </section>
       </div>
     </main>
   );

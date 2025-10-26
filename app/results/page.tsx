@@ -80,9 +80,9 @@ export default function ResultsPage() {
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-        <div className="mb-6 max-w-2xl">
+        <section className="mb-6 max-w-2xl" aria-label="Search form">
           <SearchForm compact={true} address={address} radius={radius} />
-        </div>
+        </section>
 
         {error ? (
           <ErrorMessage message={error} />
@@ -99,7 +99,7 @@ export default function ResultsPage() {
                   Discover delicious dining options in your area
                 </p>
               </div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 ring-1 ring-primary/20">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 ring-1 ring-primary/20" role="status" aria-live="polite">
                 <span className="text-sm font-medium text-primary">
                   {`${processedRestaurants.length} ${
                     processedRestaurants.length === 1
@@ -109,26 +109,26 @@ export default function ResultsPage() {
                 </span>
               </div>
             </header>
-            <div className="mb-6">
+            <section className="mb-6" aria-label="Filter and sort options">
               <FilterBar
                 sortBy={sortBy}
                 filters={filters}
                 onSortChange={setSortBy}
                 onFilterChange={setFilters}
               />
-            </div>
+            </section>
 
             <div className="flex flex-col xl:flex-row gap-6">
-              <div className="w-full xl:w-1/2">
+              <section className="w-full xl:w-1/2" aria-label="Restaurant list">
                 <div className="xl:max-h-[calc(100vh-200px)] xl:overflow-y-auto xl:pr-2">
                   <RestaurantList
                     restaurants={processedRestaurants}
                     isLoading={isLoading}
                   />
                 </div>
-              </div>
+              </section>
 
-              <div className="w-full xl:w-1/2 xl:sticky xl:top-4 xl:self-start">
+              <section className="w-full xl:w-1/2 xl:sticky xl:top-4 xl:self-start" aria-label="Restaurant map">
                 <div className="h-[400px] xl:h-[calc(100vh-200px)] xl:min-h-[600px]">
                   <MapView
                     coordinates={{ lat, lng }}
@@ -137,7 +137,7 @@ export default function ResultsPage() {
                     isLoading={isLoading}
                   />
                 </div>
-              </div>
+              </section>
             </div>
           </>
         )}

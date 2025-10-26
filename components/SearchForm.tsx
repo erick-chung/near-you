@@ -177,7 +177,7 @@ export default function SearchForm({
     if (externalCoordinates) setCoordinates(externalCoordinates);
   }, [externalCoordinates]); // Only runs when external coordinates changes
   return (
-    <div className={compact ? "space-y-2" : "space-y-4"}>
+    <div className={compact ? "space-y-2" : "space-y-4"} role="search" aria-label="Restaurant search form">
       <AddressSearch
         value={address}
         onChange={handleAddressChange}
@@ -192,9 +192,9 @@ export default function SearchForm({
       />
       <RadiusSelector value={radius} onChange={setRadius} compact={compact} />
       {!compact && (
-        <div className="flex flex-col items-center justify-center py-12 px-4">
+        <section className="flex flex-col items-center justify-center py-12 px-4" aria-label="Search introduction">
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-            <UtensilsCrossed className="w-10 h-10 text-primary/60" />
+            <UtensilsCrossed className="w-10 h-10 text-primary/60" aria-hidden="true" />
           </div>
           <h3 className="font-sans font-semibold text-xl text-foreground mb-2 text-balance text-center">
             Find restaurants near any location
@@ -203,7 +203,7 @@ export default function SearchForm({
             Enter an address above to discover great places to eat and drink,
             even if you're not there yet.
           </p>
-        </div>
+        </section>
       )}
     </div>
   );
