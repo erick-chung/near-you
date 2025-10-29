@@ -27,7 +27,7 @@ export function RestaurantList({
             No restaurants found
           </h3>
           <p className="text-muted-foreground text-center leading-relaxed max-w-sm">
-            Sorry, we couldn't find any restaurants in your area. Try adjusting
+            Sorry, we could not find any restaurants in your area. Try adjusting
             your location or search criteria.
           </p>
         </section>

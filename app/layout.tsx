@@ -11,7 +11,6 @@ export const metadata: Metadata = {
   title: "NearYou - Find Restaurants Near Any Location",
   description:
     "Discover great places to eat and drink near any address, even before you get there.",
-  viewport: "width=device-width, initial-scale=1",
   openGraph: {
     title: "NearYou - Find Restaurants Near Any Location",
     description: "Discover great places to eat and drink near any address, even before you get there.",
@@ -24,6 +23,11 @@ export const metadata: Metadata = {
     description: "Discover great places to eat and drink near any address, even before you get there.",
   },
 };
+
+export const viewport = {
+   width:'device-width', 
+   initialScale: 1,
+}
 
 export default function RootLayout({
   children,

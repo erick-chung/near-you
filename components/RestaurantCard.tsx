@@ -68,7 +68,7 @@ export function RestaurantCard({
             width={400}
             height={192}
             className="w-full h-full object-cover"
-            priority={index < 3}
+            priority={index < 3} // First 3 images are eager loaded, rest are lazy loaded
           />
           {/* Status badge overlay on photo */}
           {isOpen !== undefined && (

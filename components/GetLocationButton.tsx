@@ -1,19 +1,73 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useGeolocation } from "@/hooks/useGeolocation";
 import { reverseGeocodeCoordinates } from "@/lib/actions/geocoding.action";
 import { Coordinates } from "@/lib/types";
 import { Loader2, Navigation } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface GetLocationProps {
   onSetAddress: (address: string, coordinates: Coordinates) => void;
 }
 
 export function GetLocationButton({ onSetAddress }: GetLocationProps) {
-  const { coordinates, isLoading, error, getCurrentLocation } =
-    useGeolocation();
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0,
+  };
+
+  // Get current location function
+  async function getCurrentLocation() {
+    // Check if browser supports geolocation
+    if (!navigator.geolocation) {
+      setError("Could not get current location");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    // Success: got coordinates
+    function successCallback(position: GeolocationPosition) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      setCoordinates({ lat, lng });
+      setIsLoading(false);
+    }
+
+    // Error: permission denied, timeout, etc
+    function errorCallback(error: GeolocationPositionError) {
+      // Use switch to handle different error types with user-friendly messages
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          setError("User denied the request for Geolocation.");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          setError("Location information is unavailable.");
+          break;
+        case error.TIMEOUT:
+          setError("The request to get user location timed out.");
+          break;
+        default:
+          setError("An unknown error occurred.");
+          break;
+      }
+      setIsLoading(false);
+    }
+
+    // Request location
+    navigator.geolocation.getCurrentPosition(
+      successCallback,
+      errorCallback,
+      options
+    );
+  }
+
+  // Sends both address and coordinates back to parent - Only runs when we have coordinates from successCallback
   useEffect(() => {
     async function getAddress() {
       if (coordinates) {

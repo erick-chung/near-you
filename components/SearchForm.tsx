@@ -201,7 +201,7 @@ export default function SearchForm({
           </h3>
           <p className="text-muted-foreground text-center leading-relaxed max-w-sm">
             Enter an address above to discover great places to eat and drink,
-            even if you're not there yet.
+            even if you are not there yet.
           </p>
         </section>
       )}

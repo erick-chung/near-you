@@ -41,7 +41,9 @@ export default function MapView({
     ));
   };
 
-  const fitMapBounds = () => {
+ 
+  useEffect(() => {
+     const fitMapBounds = () => {
     if (!map || processedRestaurants.length === 0) return;
     // Create an invisible rectangle
     const bounds = new google.maps.LatLngBounds();
@@ -61,9 +63,8 @@ export default function MapView({
     }
   };
 
-  useEffect(() => {
     fitMapBounds();
-  }, [map, processedRestaurants]);
+  }, [map, processedRestaurants, coordinates]);
 
   return isLoading ? (
     <LoadingSpinner />
@@ -74,9 +75,6 @@ export default function MapView({
       mapContainerClassName="h-[400px] lg:h-[500px]"
       onClick={() => setSelectedRestaurant(null)}
       onLoad={(mapInstance) => setMap(mapInstance)}
-      options={{
-        ariaLabelledBy: "map-label",
-      }}
     >
       <Marker
         position={coordinates}
