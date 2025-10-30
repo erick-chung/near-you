@@ -72,7 +72,7 @@ export default function MapView({
     <GoogleMap
       center={center}
       zoom={14}
-      mapContainerClassName="h-[400px] lg:h-[500px]"
+      mapContainerClassName="h-[45vh] lg:h-[55vh]"
       onClick={() => setSelectedRestaurant(null)}
       onLoad={(mapInstance) => setMap(mapInstance)}
     >
