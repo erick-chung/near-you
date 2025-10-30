@@ -4,7 +4,6 @@ interface RadiusSelectorProps {
   onChange: (value: number) => void;
   compact?: boolean;
 }
-// It's good to use predefined options because it prevents invalid selections
 const RADIUS_OPTIONS = [
   { label: "0.5 mi", value: 805 },
   { label: "1 mi", value: 1609 },

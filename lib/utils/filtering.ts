@@ -51,11 +51,3 @@ export function filterRestaurants(
   return filteredRestaurants;
 }
 
-/* 
-Notes:
-- Everything inside .filter is a boolean (true or false), if its true, its kept in the array
- The structure is simple: 
- restaurants.filter((restaurant) => {
-  return (condition1 && condition2 && condition3 && condition4);
-});
-*/
