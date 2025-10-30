@@ -79,3 +79,16 @@ export interface Coordinates {
   lat: number;
   lng: number;
 }
+
+export interface Favorite {
+  id: string;
+  userId: string;           
+  restaurantId: string;
+  name: string;
+  address: string;
+  rating: number | null;  
+  priceLevel: string | null; 
+  cuisineType: string[];
+  photoUrl: string | null;  
+  createdAt: Date | string; 
+}

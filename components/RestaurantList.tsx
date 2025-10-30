@@ -6,9 +6,11 @@ import { UtensilsCrossed } from "lucide-react";
 export function RestaurantList({
   restaurants,
   isLoading,
+  searchedAddress,
 }: {
   restaurants: Restaurant[];
   isLoading: boolean;
+  searchedAddress?: string;
 }) {
   return (
     <>
@@ -38,6 +40,7 @@ export function RestaurantList({
               key={restaurant.id}
               restaurant={restaurant}
               index={index}
+              searchedAddress={searchedAddress}
             />
           ))}
         </div>
