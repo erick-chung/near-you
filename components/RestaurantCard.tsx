@@ -46,8 +46,8 @@ export function RestaurantCard({
   };
 
   const handleHeartClick = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click when clicking heart
-    if (!user) return; // SignInButton will handle this case
+    e.stopPropagation(); 
+    if (!user) return; 
     
     setIsProcessing(true);
     try {

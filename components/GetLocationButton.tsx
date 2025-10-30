@@ -20,7 +20,6 @@ export function GetLocationButton({ onSetAddress }: GetLocationProps) {
     maximumAge: 0,
   };
 
-  // Get current location function
   async function getCurrentLocation() {
     // Check if browser supports geolocation
     if (!navigator.geolocation) {
@@ -41,7 +40,6 @@ export function GetLocationButton({ onSetAddress }: GetLocationProps) {
 
     // Error: permission denied, timeout, etc
     function errorCallback(error: GeolocationPositionError) {
-      // Use switch to handle different error types with user-friendly messages
       switch (error.code) {
         case error.PERMISSION_DENIED:
           setError("User denied the request for Geolocation.");

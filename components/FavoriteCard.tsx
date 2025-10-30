@@ -1,10 +1,9 @@
 "use client"
 
 import type { Restaurant } from "@/lib/types"
-import { Star, MapPin, Trash2, ExternalLink } from "lucide-react"
+import { Star, Trash2 } from "lucide-react"
 import { useState } from "react"
 import Image from "next/image"
-import { formatDistance } from "@/lib/utils/distance"
 import { formatCuisineTypes } from "@/lib/utils/cuisine-mapping"
 import { RestaurantModal } from "./RestaurantModal"
 
@@ -16,12 +15,12 @@ interface FavoriteCardProps {
 }
 
 export function FavoriteCard({ restaurant, onRemove, index, featured = false }: FavoriteCardProps) {
-  const { id, name, address, rating, reviewCount, priceLevel, cuisineType, distance, isOpen, photoUrl } = restaurant
+  const { id, name, address, rating, reviewCount, priceLevel, cuisineType, isOpen, photoUrl } = restaurant
   const [isRemoving, setIsRemoving] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleRemove = (e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent card click when removing
+    e.stopPropagation()
     setIsRemoving(true)
     setTimeout(() => {
       onRemove(id)
@@ -39,7 +38,6 @@ export function FavoriteCard({ restaurant, onRemove, index, featured = false }: 
     }
   }
 
-  // Generate star rating display
   const renderStars = () => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -65,12 +63,10 @@ export function FavoriteCard({ restaurant, onRemove, index, featured = false }: 
     return descriptions[level - 1] || "Price not available";
   };
 
-  // Format cuisine types for display
   const displayCuisineTypes = cuisineType && cuisineType.length > 0 
     ? formatCuisineTypes(cuisineType) 
     : [];
 
-  // Slight rotation for polaroid effect (alternating)
   const rotation = index % 3 === 0 ? "sm:rotate-1" : index % 3 === 1 ? "sm:-rotate-1" : "sm:rotate-0"
 
   return (
@@ -103,10 +99,8 @@ export function FavoriteCard({ restaurant, onRemove, index, featured = false }: 
             className="object-cover transition-transform duration-300 group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
-          {/* Overlay gradient for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-          {/* Open/Closed badge */}
           {isOpen !== undefined && (
             <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
               <span
@@ -125,12 +119,10 @@ export function FavoriteCard({ restaurant, onRemove, index, featured = false }: 
         </div>
 
         <div className="space-y-2">
-          {/* Name */}
           <h2 className="font-semibold text-base sm:text-lg text-card-foreground leading-tight line-clamp-2 text-balance group-hover:text-primary transition-colors">
             {name}
           </h2>
 
-          {/* Rating */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-0.5" role="img" aria-label={`${rating} out of 5 stars rating`}>
               {renderStars()}
@@ -139,7 +131,6 @@ export function FavoriteCard({ restaurant, onRemove, index, featured = false }: 
             <span className="text-xs text-muted-foreground">({reviewCount})</span>
           </div>
 
-          {/* Price and cuisine */}
           {(priceLevel || displayCuisineTypes.length > 0) && (
             <div className="flex items-center gap-2 text-sm">
               {priceLevel && (
@@ -163,14 +154,12 @@ export function FavoriteCard({ restaurant, onRemove, index, featured = false }: 
             </div>
           )}
 
-          {/* Address */}
           <address className="text-xs text-muted-foreground line-clamp-2 leading-relaxed not-italic">
             {address}
           </address>
         </div>
       </div>
 
-      {/* Modal */}
       <RestaurantModal
         restaurant={restaurant}
         isOpen={isModalOpen}

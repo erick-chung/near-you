@@ -87,7 +87,6 @@ export function useFavorites() {
   const removeFromFavorites = async (restaurantId: string) => {
     if (!user) return false;
 
-    // Store original favorites OUTSIDE the try block
     const originalFavorites = favorites;
 
     try {

@@ -2,15 +2,7 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { 
-  ExternalLink, 
-  Navigation, 
-  Star, 
-  MapPin, 
-  Clock,
-  Phone,
-  X 
-} from "lucide-react";
+import { ExternalLink, Navigation, Star, MapPin, X } from "lucide-react";
 import { Restaurant } from "@/lib/types";
 import { formatCuisineTypes } from "@/lib/utils/cuisine-mapping";
 import { formatDistance } from "@/lib/utils/distance";
@@ -36,17 +28,14 @@ export function RestaurantModal({ restaurant, isOpen, onClose, startingAddress }
     distance,
     isOpen: restaurantIsOpen,
     photoUrl,
-    phoneNumber,
     website,
   } = restaurant;
 
-  const displayCuisineTypes = cuisineType && cuisineType.length > 0 
-    ? formatCuisineTypes(cuisineType) 
-    : [];
+  const displayCuisineTypes = cuisineType && cuisineType.length > 0 ? formatCuisineTypes(cuisineType) : [];
 
   const handleDirections = () => {
     const encodedDestination = encodeURIComponent(address);
-    
+
     let mapsUrl;
     if (startingAddress) {
       // Use provided starting address
@@ -56,17 +45,17 @@ export function RestaurantModal({ restaurant, isOpen, onClose, startingAddress }
       // Use current location (existing behavior)
       mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedDestination}`;
     }
-    
-    window.open(mapsUrl, '_blank', 'noopener,noreferrer');
+
+    window.open(mapsUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleWebsite = () => {
     if (website) {
-      window.open(website, '_blank', 'noopener,noreferrer');
+      window.open(website, "_blank", "noopener,noreferrer");
     } else {
       // Fallback: Google search for restaurant
       const searchQuery = encodeURIComponent(`${name} ${address} menu`);
-      window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank', 'noopener,noreferrer');
+      window.open(`https://www.google.com/search?q=${searchQuery}`, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -75,9 +64,7 @@ export function RestaurantModal({ restaurant, isOpen, onClose, startingAddress }
       <Star
         key={index}
         className={`h-4 w-4 ${
-          index < Math.floor(rating)
-            ? "fill-amber-400 text-amber-400"
-            : "fill-gray-200 text-gray-200"
+          index < Math.floor(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200"
         }`}
         aria-hidden="true"
       />
@@ -89,9 +76,7 @@ export function RestaurantModal({ restaurant, isOpen, onClose, startingAddress }
     return Array.from({ length: 4 }, (_, index) => (
       <span
         key={index}
-        className={`text-lg font-bold ${
-          index < level ? "text-green-600" : "text-gray-300"
-        }`}
+        className={`text-lg font-bold ${index < level ? "text-green-600" : "text-gray-300"}`}
         aria-hidden="true"
       >
         $
@@ -107,15 +92,13 @@ export function RestaurantModal({ restaurant, isOpen, onClose, startingAddress }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
+      <DialogContent
         className="w-[95vw] max-w-lg mx-auto p-0 overflow-hidden bg-gradient-to-br from-orange-50 to-red-50 border-0 shadow-2xl sm:w-full max-h-[90vh] overflow-y-auto"
         aria-describedby="restaurant-details"
       >
         {/* Accessible title */}
-        <DialogTitle className="sr-only">
-          {name} Restaurant Details and Actions
-        </DialogTitle>
-        
+        <DialogTitle className="sr-only">{name} Restaurant Details and Actions</DialogTitle>
+
         {/* Header with close button */}
         <header className="relative">
           <button
@@ -140,12 +123,14 @@ export function RestaurantModal({ restaurant, isOpen, onClose, startingAddress }
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" aria-hidden="true" />
             </div>
           ) : (
-            <div 
+            <div
               className="h-40 sm:h-48 w-full bg-gradient-to-r from-orange-400 to-red-400 flex items-center justify-center"
               role="img"
               aria-label="Restaurant placeholder image"
             >
-              <span className="text-4xl sm:text-6xl" role="img" aria-label="Restaurant icon">🍽️</span>
+              <span className="text-4xl sm:text-6xl" role="img" aria-label="Restaurant icon">
+                🍽️
+              </span>
             </div>
           )}
         </header>
@@ -154,22 +139,16 @@ export function RestaurantModal({ restaurant, isOpen, onClose, startingAddress }
         <main className="p-4 sm:p-6 space-y-3 sm:space-y-4" id="restaurant-details">
           {/* Restaurant name and status */}
           <div className="flex items-start justify-between gap-2 sm:gap-3">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
-              {name}
-            </h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">{name}</h1>
             {restaurantIsOpen !== undefined && (
               <span
                 className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-semibold shrink-0 ${
-                  restaurantIsOpen
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
+                  restaurantIsOpen ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                 }`}
                 aria-label={`Restaurant is currently ${restaurantIsOpen ? "open" : "closed"}`}
               >
-                <div 
-                  className={`w-2 h-2 rounded-full mr-1 sm:mr-2 ${
-                    restaurantIsOpen ? "bg-green-400" : "bg-red-400"
-                  }`} 
+                <div
+                  className={`w-2 h-2 rounded-full mr-1 sm:mr-2 ${restaurantIsOpen ? "bg-green-400" : "bg-red-400"}`}
                   aria-hidden="true"
                 />
                 <span className="hidden sm:inline">{restaurantIsOpen ? "Open Now" : "Closed"}</span>
@@ -180,25 +159,25 @@ export function RestaurantModal({ restaurant, isOpen, onClose, startingAddress }
 
           {/* Rating section */}
           <section aria-labelledby="rating-heading">
-            <h2 id="rating-heading" className="sr-only">Customer Rating</h2>
+            <h2 id="rating-heading" className="sr-only">
+              Customer Rating
+            </h2>
             <div className="flex items-center gap-2">
-              <div 
-                className="flex items-center gap-1"
-                role="img" 
-                aria-label={`${rating} out of 5 stars rating`}
-              >
+              <div className="flex items-center gap-1" role="img" aria-label={`${rating} out of 5 stars rating`}>
                 {renderStars()}
               </div>
               <span className="text-base sm:text-lg font-semibold text-gray-900">{rating}</span>
               <span className="text-xs sm:text-sm text-gray-600">
-                ({reviewCount.toLocaleString()} review{reviewCount !== 1 ? 's' : ''})
+                ({reviewCount.toLocaleString()} review{reviewCount !== 1 ? "s" : ""})
               </span>
             </div>
           </section>
 
           {/* Price and cuisine section */}
           <section aria-labelledby="details-heading">
-            <h2 id="details-heading" className="sr-only">Restaurant Details</h2>
+            <h2 id="details-heading" className="sr-only">
+              Restaurant Details
+            </h2>
             <div className="flex items-center gap-3 sm:gap-4">
               {priceLevel && (
                 <div className="flex items-center gap-1">
@@ -229,26 +208,26 @@ export function RestaurantModal({ restaurant, isOpen, onClose, startingAddress }
 
           {/* Location section */}
           <section aria-labelledby="location-heading">
-            <h2 id="location-heading" className="sr-only">Location Information</h2>
+            <h2 id="location-heading" className="sr-only">
+              Location Information
+            </h2>
             <div className="space-y-2">
               <div className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
-                <address className="text-xs sm:text-sm text-gray-600 leading-relaxed not-italic">
-                  {address}
-                </address>
+                <address className="text-xs sm:text-sm text-gray-600 leading-relaxed not-italic">{address}</address>
               </div>
               <div className="flex items-center gap-2">
                 <Navigation className="h-4 w-4 text-blue-500" aria-hidden="true" />
-                <span className="text-xs sm:text-sm font-medium text-blue-600">
-                  {formatDistance(distance)} away
-                </span>
+                <span className="text-xs sm:text-sm font-medium text-blue-600">{formatDistance(distance)} away</span>
               </div>
             </div>
           </section>
 
           {/* Action buttons section */}
           <section aria-labelledby="actions-heading">
-            <h2 id="actions-heading" className="sr-only">Available Actions</h2>
+            <h2 id="actions-heading" className="sr-only">
+              Available Actions
+            </h2>
             <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-3 sm:pt-4" role="group" aria-label="Restaurant actions">
               <Button
                 onClick={handleWebsite}

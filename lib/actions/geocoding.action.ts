@@ -67,11 +67,11 @@ export async function geocodeAddress(address: string): Promise<Address> {
   } catch (err) {
     console.error("Geocoding failed:", err)
     // Handle network-level failures (Wifi off, DNS issues, etc)
-    if (err instanceof TypeError && err.message.includes('fetch')) { // Network failures create typeerrors (TypeError: fetch failed)
+    if (err instanceof TypeError && err.message.includes('fetch')) { 
       throw new Error("Connection issue. Please check your internet.")
     }
     // Re-throw other errors
-    throw err; // If you have specific throw new Error messages in catch block, you need to just rethrow here by doing throw err, instead of throw new Error("Error message") or else it will replace original message
+    throw err; 
   }
  })
 }

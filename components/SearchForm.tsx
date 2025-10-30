@@ -9,7 +9,7 @@ import { Coordinates } from "@/lib/types";
 
 interface SearchFormProps {
   compact?: boolean;
-  externalAddress?: string; // Adding the ? means it could be either string or undefined
+  externalAddress?: string;
   externalCoordinates?: Coordinates | null;
   address?: string | null;
   radius?: number | null;
@@ -37,14 +37,6 @@ export default function SearchForm({
   });
   const router = useRouter();
 
-  // const navigateToResults = useEffectEvent(() => {
-  //   if (externalCoordinates) {
-  //     router.push(
-  //       `/results?address=${externalAddress}&lat=${externalCoordinates.lat}&lng=${externalCoordinates.lng}&radius=${radius}`
-  //     );
-  //   }
-  // });
-
   const handleSearch = async (
     directCoordinates?: {
       lat: number;
@@ -57,8 +49,8 @@ export default function SearchForm({
 
       // Use directAddress if provided, otherwise use state
       const addressToUse = directAddress || address;
-      // Use trimmedAddress instead of directaddress in the search because that uses a cleaner address with no extra spaces
-      const trimmedAddress = addressToUse.trim()
+      // Use trimmedAddress instead of directaddress in the search
+      const trimmedAddress = addressToUse.trim();
 
       if (!trimmedAddress) throw new Error("Please enter an address!");
 
@@ -86,18 +78,13 @@ export default function SearchForm({
         `/results?address=${result.formatted}&lat=${result.coordinates.lat}&lng=${result.coordinates.lng}&radius=${radius}`
       );
       const filteredSearches = searches
-        .filter(
-          // remember this, whenever youre filtering an array, you need to store the result so you can actually access that new filtered array
-          (search) => typeof search === "string"
-        )
-        .filter(
-          (search) => search.toLowerCase() !== result.formatted.toLowerCase()
-        );
+        .filter((search) => typeof search === "string")
+        .filter((search) => search.toLowerCase() !== result.formatted.toLowerCase());
       const limit = 5;
       const limitedSearches = filteredSearches.slice(0, limit);
       setSearches([result.formatted, ...limitedSearches]);
     } catch (err) {
-      console.error("Search form error:", err)
+      console.error("Search form error:", err);
       if (err instanceof Error) {
         setError(err.message);
       } else {
@@ -108,27 +95,18 @@ export default function SearchForm({
     }
   };
 
-  const handleAddressChange = (
-    newAddress: string,
-    newCoordinates?: { lat: number; lng: number }
-  ) => {
+  const handleAddressChange = (newAddress: string, newCoordinates?: { lat: number; lng: number }) => {
     setAddress(newAddress);
     setCoordinates(newCoordinates || null);
     if (error) setError(null);
   };
 
-  const handleAutocompleteSearch = (
-    selectedAddress: string,
-    selectedCoordinates: { lat: number; lng: number }
-  ) => {
-    // Update the address state
+  const handleAutocompleteSearch = (selectedAddress: string, selectedCoordinates: { lat: number; lng: number }) => {
     setAddress(selectedAddress);
     setCoordinates(selectedCoordinates);
 
-    // Clear any existing errors
     if (error) setError(null);
 
-    // Search immediately with the coordinates AND the full address
     handleSearch(selectedCoordinates, selectedAddress);
   };
 
@@ -143,10 +121,8 @@ export default function SearchForm({
     setSearches([]);
   };
 
-  // We want to automatically re-search whenever the radius changes cuz that counts as new search criteria
   useEffect(() => {
     if (compact && initialAddress) {
-      // We specifically use this method for the radius because we're already on the results page. So we're just simply changing the parameter portion of the url
       const searchParams = new URLSearchParams(window.location.search);
       searchParams.set("radius", radius.toString());
       // Update URL without navigation
@@ -154,7 +130,6 @@ export default function SearchForm({
     }
   }, [radius, compact, initialAddress]);
 
-  // For the external coordinates, we can't do the window.location.search & searchParams method because we're on the home page. We have to navigate to the results page upon getting the results using router.push
   useEffect(() => {
     if (externalAddress && externalCoordinates) {
       router.push(
@@ -169,13 +144,12 @@ export default function SearchForm({
   }, [searches]);
 
   useEffect(() => {
-    // Because external address is optional (if user doesnt click on getlocation button), it can be undefined. So make sure that it's not undefined by doing an if check first before setting address to avoid type errors
     if (externalAddress) setAddress(externalAddress);
-  }, [externalAddress]); // Only runs when external address changes
+  }, [externalAddress]);
 
   useEffect(() => {
     if (externalCoordinates) setCoordinates(externalCoordinates);
-  }, [externalCoordinates]); // Only runs when external coordinates changes
+  }, [externalCoordinates]);
   return (
     <div className={compact ? "space-y-2" : "space-y-4"} role="search" aria-label="Restaurant search form">
       <AddressSearch
@@ -200,8 +174,7 @@ export default function SearchForm({
             Find restaurants near any location
           </h3>
           <p className="text-muted-foreground text-center leading-relaxed max-w-sm">
-            Enter an address above to discover great places to eat and drink,
-            even if you are not there yet.
+            Enter an address above to discover great places to eat and drink, even if you are not there yet.
           </p>
         </section>
       )}
