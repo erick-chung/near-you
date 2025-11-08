@@ -8,6 +8,9 @@ NearYou is a location-based restaurant discovery application that solves a speci
 
 This project demonstrates end-to-end data architecture, from API integration and database design to data visualization and user-facing analytics.
 
+![NearYou App Screenshot](./screenshot.jpeg)
+*Restaurant search results displaying distances from a user-specified destination in Manhattan, with interactive map visualization*
+
 ## The Problem
 
 **Google Maps limitation:** When you search "restaurants near me," Google shows results based on your current GPS location. But what if you're planning to meet someone across town tomorrow? You need restaurants near *that* address, not where you're sitting now.
