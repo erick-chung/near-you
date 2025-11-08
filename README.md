@@ -106,8 +106,4 @@ npm run dev
 ## Contact
 
 Built by Erick Chung  
-[GitHub](https://github.com/erick-chung) | [LinkedIn](https://linkedin.com/in/your-profile)
-
----
-
-**Note:** This project emphasizes data architecture, API integration, and database design - core competencies for data analyst and data engineering roles.
+[GitHub](https://github.com/erick-chung) | [LinkedIn](www.linkedin.com/in/erick-chung)
