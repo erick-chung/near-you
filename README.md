@@ -20,7 +20,7 @@ This project demonstrates end-to-end data architecture, from API integration and
 - **PostgreSQL database** hosted on Neon with efficient schema design for restaurant data, user preferences, and location information
 - **Prisma ORM** for type-safe database operations and automated migrations
 - **Optimized indexing** on location-based queries for fast search performance
-- **Data normalization** for user favorites and authentication integration
+- **Custom schema design** integrating user authentication with restaurant and favorites data
 
 ### Data Integration & Pipeline
 - **Multi-source API integration**: Google Places API and Geolocation API
@@ -106,4 +106,4 @@ npm run dev
 ## Contact
 
 Built by Erick Chung  
-[GitHub](https://github.com/erick-chung) | [LinkedIn](www.linkedin.com/in/erick-chung)
+[GitHub](https://github.com/erick-chung) | [LinkedIn](https://www.linkedin.com/in/erick-chung)
